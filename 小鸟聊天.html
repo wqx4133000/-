@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鸟鸟QQ - 复古聊天室</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(to bottom, #1e3c72, #2a5298);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        /* QQ主容器 */
+        .qq-container {
+            width: 1000px;
+            height: 700px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            display: flex;
+            overflow: hidden;
+            border: 1px solid #b5b5b5;
+        }
+        
+        /* 左侧边栏 - QQ好友列表样式 */
+        .left-sidebar {
+            width: 250px;
+            background: #f9f9f9;
+            border-right: 1px solid #d4d4d4;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* QQ标题栏 */
+        .qq-header {
+            height: 60px;
+            background: linear-gradient(to bottom, #3a8cff, #2a7aff);
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .qq-header span {
+            margin-left: 10px;
+        }
+        
+        /* 小鸟列表 */
+        .bird-list {
+            flex: 1;
+            overflow-y: auto;
+            background: white;
+        }
+        
+        /* 单个小鸟项目 */
+        .bird-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .bird-item:hover {
+            background: #f0f8ff;
+        }
+        
+        .bird-item.active {
+            background: #e3f2ff;
+            border-left: 3px solid #3a8cff;
+        }
+        
+        /* 小鸟头像 */
+        .bird-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-right: 12px;
+            border: 1px solid #ddd;
+        }
+        
+        /* 小鸟信息 */
+        .bird-info {
+            flex: 1;
+        }
+        
+        .bird-name {
+            font-weight: bold;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 3px;
+        }
+        
+        .bird-species {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+        
+        /* 小鸟状态指示器 */
+        .bird-status {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        
+        .status-online {
+            background: #e1f7e1;
+            color: #2e7d32;
+        }
+        
+        .status-offline {
+            background: #f5f5f5;
+            color: #757575;
+        }
+        
+        .status-busy {
+            background: #ffebee;
+            color: #c62828;
+        }
+        
+        /* 右侧聊天区域 */
+        .right-chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+        
+        /* 聊天标题栏 */
+        .chat-header {
+            height: 60px;
+            background: linear-gradient(to bottom, #f8f8f8, #e8e8e8);
+            border-bottom: 1px solid #d4d4d4;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .current-bird-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-right: 10px;
+        }
+        
+        .chat-bird-info h3 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 3px;
+        }
+        
+        .chat-bird-info p {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        /* 聊天消息区域 */
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 消息气泡 */
+        .message {
+            max-width: 70%;
+            margin-bottom: 15px;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message-bubble {
+            padding: 10px 15px;
+            border-radius: 5px;
+            position: relative;
+            word-wrap: break-word;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        /* 对方消息（小鸟） */
+        .bird-message {
+            align-self: flex-start;
+        }
+        
+        .bird-message .message-bubble {
+            background: white;
+            border: 1px solid #d4d4d4;
+            border-top-left-radius: 0;
+        }
+        
+        .bird-message .message-bubble:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -8px;
+            width: 0;
+            height: 0;
+            border-top: 8px solid white;
+            border-left: 8px solid transparent;
+        }
+        
+        .bird-message .message-bubble:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -9px;
+            width: 0;
+            height: 0;
+            border-top: 8px solid #d4d4d4;
+            border-left: 8px solid transparent;
+        }
+        
+        .message-time {
+            font-size: 11px;
+            color: #999;
+            margin-top: 5px;
+        }
+        
+        /* 我的消息 */
+        .my-message {
+            align-self: flex-end;
+        }
+        
+        .my-message .message-bubble {
+            background: #e3f2ff;
+            border: 1px solid #b3d7ff;
+            border-top-right-radius: 0;
+            color: #333;
+        }
+        
+        .my-message .message-bubble:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -8px;
+            width: 0;
+            height: 0;
+            border-top: 8px solid #e3f2ff;
+            border-right: 8px solid transparent;
+        }
+        
+        .my-message .message-bubble:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -9px;
+            width: 0;
+            height: 0;
+            border-top: 8px solid #b3d7ff;
+            border-right: 8px solid transparent;
+        }
+        
+        /* 输入区域 */
+        .input-area {
+            border-top: 1px solid #d4d4d4;
+            padding: 15px;
+            background: #f8f8f8;
+        }
+        
+        .input-container {
+            display: flex;
+        }
+        
+        #message-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #d4d4d4;
+            border-radius: 5px;
+            font-size: 14px;
+            outline: none;
+            resize: none;
+            height: 60px;
+        }
+        
+        #message-input:focus {
+            border-color: #3a8cff;
+        }
+        
+        #send-btn {
+            width: 80px;
+            margin-left: 10px;
+            background: #3a8cff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        #send-btn:hover {
+            background: #2a7aff;
+        }
+        
+        /* 小鸟状态标签 */
+        .status-tag {
+            display: inline-block;
+            font-size: 10px;
+            padding: 1px 6px;
+            border-radius: 3px;
+            margin-left: 5px;
+        }
+        
+        .tag-sleeping { background: #e8e8e8; color: #666; }
+        .tag-busy { background: #ffebee; color: #c62828; }
+        .tag-online { background: #e8f5e9; color: #2e7d32; }
+        
+        /* QQ经典滚动条 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+        
+        /* 小鸟被吵醒的动画 */
+        @keyframes wakeUp {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .wake-up {
+            animation: wakeUp 0.5s ease;
+        }
+        
+        /* 系统消息 */
+        .system-message {
+            align-self: center;
+            background: #f0f0f0;
+            padding: 8px 15px;
+            border-radius: 15px;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="qq-container">
+        <!-- 左侧边栏 -->
+        <div class="left-sidebar">
+            <div class="qq-header">
+                <i class="fas fa-dove"></i>
+                <span>鸟鸟QQ</span>
+            </div>
+            
+            <div class="bird-list" id="bird-list">
+                <!-- 小鸟列表会由JS动态生成 -->
+            </div>
+        </div>
+        
+        <!-- 右侧聊天区域 -->
+        <div class="right-chat">
+            <div class="chat-header">
+                <div class="current-bird-avatar" id="current-bird-avatar">🐦</div>
+                <div class="chat-bird-info">
+                    <h3 id="current-bird-name">选择一只小鸟开始聊天</h3>
+                    <p id="current-bird-status">点击左侧小鸟头像</p>
+                </div>
+            </div>
+            
+            <div class="chat-messages" id="chat-messages">
+                <div class="system-message">💬 欢迎使用鸟鸟QQ！点击左侧小鸟头像开始聊天</div>
+            </div>
+            
+            <div class="input-area">
+                <div class="input-container">
+                    <textarea id="message-input" placeholder="输入消息...（按Ctrl+Enter发送）"></textarea>
+                    <button id="send-btn">发送</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== 鸟类数据库 ====================
+        const BIRDS = {
+            '夜鹭': {
+                nickname: '夜师傅',
+                species: '夜鹭',
+                avatar: '🦉',
+                color: '#5d6d7e',
+                personality: {
+                    style: '丧系打工人',
+                    slang: ['寄了', '摸鱼', '社恐', 'emo'],
+                    emoji: ['😑', '🥱', '🤡', '🐧'],
+                    habits: ['站在水边发呆', '缩脖子cos企鹅', '被误认为大蟑螂']
+                },
+                schedule: {
+                    activeHours: [18, 19, 20, 21, 22, 23, 0, 1, 2, 3, 4, 5], // 夜行性
+                    restStatus: '😴 睡觉ing',
+                    activities: [
+                        { period: 'dawn', action: '回巢补觉', emoji: '💤' },
+                        { period: 'morning', action: '缩脖发呆', emoji: '🧘' },
+                        { period: 'noon', action: '被游客围观', emoji: '📸' },
+                        { period: 'evening', action: '出门觅食', emoji: '🍣' }
+                    ]
+                },
+                onomatopoeia: ['呱', '哇', '...'],
+                responses: {
+                    wakeUp: ['（被吵醒，眼神呆滞）谁啊...大白天的不让鸟睡觉...', '（缩了缩脖子）zzz...嗯？天亮了吗？'],
+                    busy: ['（叼着鱼）别吵，正喂娃呢...', '（盯着水面）我在思考鸟生，勿扰...']
+                },
+                mood: 0.7 // 初始心情值
+            },
+            '珠颈斑鸠': {
+                nickname: '古咕固',
+                species: '珠颈斑鸠',
+                avatar: '🐦',
+                color: '#a569bd',
+                personality: {
+                    style: '佛系糊弄学大师',
+                    slang: ['摆烂', '咕咕', '随便', '蛋定'],
+                    emoji: ['🥚', '🏗️', '😌', '🕊️'],
+                    habits: ['阳台下蛋', '两根树枝搭窝', '被风吹跑蛋']
+                },
+                schedule: {
+                    activeHours: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+                    restStatus: '🥚 孵蛋ing',
+                    activities: [
+                        { period: 'dawn', action: '咕咕咕求偶', emoji: '💘' },
+                        { period: 'morning', action: '敷衍搭窝', emoji: '🛠️' },
+                        { period: 'noon', action: '孵蛋发呆', emoji: '🥚' }
+                    ]
+                },
+                onomatopoeia: ['咕', '咕咕', '古咕固'],
+                responses: {
+                    wakeUp: ['（护住蛋）咕？！吓死鸟了！', '咕咕...（睡眼惺忪）我的蛋没事吧...'],
+                    busy: ['（敷衍点头）咕...在孵蛋，长话短说...', '咕咕！（警惕）你是不是想偷我蛋？']
+                },
+                mood: 0.8
+            },
+            '乌鸫': {
+                nickname: '鸫哥',
+                species: '乌鸫',
+                avatar: '🐦‍⬛',
+                color: '#2c3e50',
+                personality: {
+                    style: '暴躁老哥',
+                    slang: ['嗦面', '记仇', '你谁', '莫挨老子'],
+                    emoji: ['🍜', '👁️', '😠', '💢'],
+                    habits: ['吃蚯蚓像嗦面', '记住欺负它的人', '清晨高歌']
+                },
+                schedule: {
+                    activeHours: [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+                    restStatus: '🍜 觅食ing',
+                    activities: [
+                        { period: 'dawn', action: '高歌求偶', emoji: '🎤' },
+                        { period: 'morning', action: '草坪嗦蚯蚓面', emoji: '🍜' },
+                        { period: 'noon', action: '巡逻领地赶猫', emoji: '🐱' }
+                    ]
+                },
+                onomatopoeia: ['吱', '啾', '嘎'],
+                responses: {
+                    wakeUp: ['（警觉抬头）谁？！是不是上次那只猫？！', '（叼着蚯蚓）正嗦面呢，吵啥！'],
+                    busy: ['（记仇眼神）你最好有事...', '（边吃边说）忙着带娃，没空理你...']
+                },
+                mood: 0.6
+            },
+            '小鷿鷈': {
+                nickname: '王八鸭子',
+                species: '小鷿鷈',
+                avatar: '🦢',
+                color: '#3498db',
+                personality: {
+                    style: '活泼水鬼',
+                    slang: ['潜水', '贴贴', '芜湖', '沉了'],
+                    emoji: ['🌊', '👶', '🏊', '💦'],
+                    habits: ['潜水抓鱼', '背着小鸟游泳', '突然沉入水中']
+                },
+                schedule: {
+                    activeHours: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+                    restStatus: '🌊 潜水ing',
+                    activities: [
+                        { period: 'dawn', action: '背娃晨泳', emoji: '👶' },
+                        { period: 'morning', action: '潜水抓鱼喂崽', emoji: '🐟' },
+                        { period: 'noon', action: '水面漂浮发呆', emoji: '💤' }
+                    ]
+                },
+                onomatopoeia: ['啾', '滴', '咕'],
+                responses: {
+                    wakeUp: ['（从水里冒头）噗哈！谁叫我？', '（甩甩羽毛）刚潜水呢，啥事？'],
+                    busy: ['（背着小鸟）游不动了...带娃好累...', '（潜水前）等我抓条鱼再聊！']
+                },
+                mood: 0.9
+            },
+            '黑水鸡': {
+                nickname: '红骨顶',
+                species: '黑水鸡',
+                avatar: '🐔',
+                color: '#e74c3c',
+                personality: {
+                    style: '好斗社牛',
+                    slang: ['打架', '游啊', '冲鸭', '我的'],
+                    emoji: ['👊', '🏃', '💥', '🔥'],
+                    habits: ['水面狂奔', '和同类打架', '抢地盘']
+                },
+                schedule: {
+                    activeHours: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+                    restStatus: '👊 打架ing',
+                    activities: [
+                        { period: 'dawn', action: '水面晨跑', emoji: '🏃' },
+                        { period: 'morning', action: '求偶打架', emoji: '👊' },
+                        { period: 'noon', action: '带娃游泳', emoji: '👶' }
+                    ]
+                },
+                onomatopoeia: ['咯', '嘎', '叽'],
+                responses: {
+                    wakeUp: ['（摆出战斗姿势）谁？！来打架吗？', '（从水里跳出来）吵啥吵，正睡觉呢！'],
+                    busy: ['（边跑边说）忙着打架，没空！', '（护着娃）别过来，我啄你哦！']
+                },
+                mood: 0.7
+            },
+            '白骨顶': {
+                nickname: '白骨顶',
+                species: '白骨顶',
+                avatar: '🐧',
+                color: '#2c3e50',
+                personality: {
+                    style: '憨厚老实',
+                    slang: ['蹬三轮', '漂啊', '吃草', '憨憨'],
+                    emoji: ['🚲', '🌿', '😐', '💦'],
+                    habits: ['水面蹬腿游泳', '吃水草', '被黑水鸡欺负']
+                },
+                schedule: {
+                    activeHours: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+                    restStatus: '🚲 蹬水ing',
+                    activities: [
+                        { period: 'dawn', action: '集体晨游', emoji: '👥' },
+                        { period: 'morning', action: '吃水草早餐', emoji: '🌿' },
+                        { period: 'noon', action: '教小鸟蹬水', emoji: '🚲' }
+                    ]
+                },
+                onomatopoeia: ['咕', '咯', '噗'],
+                responses: {
+                    wakeUp: ['（慢慢浮出水面）嗯？叫我吗？', '（嚼着水草）刚在蹬水，啥事？'],
+                    busy: ['（慢吞吞）等我吃完这口草...', '（护着娃）别吓到孩子...']
+                },
+                mood: 0.8
+            },
+            '红尾水鸲': {
+                nickname: '宏伟水渠',
+                species: '红尾水鸲',
+                avatar: '🐦',
+                color: '#e74c3c',
+                personality: {
+                    style: '活泼戏精',
+                    slang: ['于一', '摇尾巴', '宏伟', '啾'],
+                    emoji: ['🫐', '🍓', '💃', '🎭'],
+                    habits: ['摇尾巴', '溪边抓虫', '飞来飞去']
+                },
+                schedule: {
+                    activeHours: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+                    restStatus: '💃 摇尾ing',
+                    activities: [
+                        { period: 'dawn', action: '溪边晨唱', emoji: '🎤' },
+                        { period: 'morning', action: '摇尾巴求偶', emoji: '💃' },
+                        { period: 'noon', action: '抓虫喂崽', emoji: '🐛' }
+                    ]
+                },
+                onomatopoeia: ['于一', '吱', '啾'],
+                responses: {
+                    wakeUp: ['（尾巴狂摇）于一！谁叫我！', '（从溪边跳起来）于一？刚在洗澡...'],
+                    busy: ['（边摇尾巴边说）于一！忙着抓虫！', '（飞来飞去）于一！等我喂完娃！']
+                },
+                mood: 0.9
+            },
+            '灰头绿啄木鸟': {
+                nickname: '绿木匠',
+                species: '灰头绿啄木鸟',
+                avatar: '🐦',
+                color: '#27ae60',
+                personality: {
+                    style: '认真工匠',
+                    slang: ['敲', '笃笃', '找虫', '绿了'],
+                    emoji: ['🔨', '🌲', '👨‍⚕️', '💚'],
+                    habits: ['敲树找虫', '吃蚂蚁', '飞s形']
+                },
+                schedule: {
+                    activeHours: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+                    restStatus: '🔨 敲木ing',
+                    activities: [
+                        { period: 'dawn', action: '晨敲求偶', emoji: '🔨' },
+                        { period: 'morning', action: '找虫喂崽', emoji: '🐛' },
+                        { period: 'noon', action: '躲太阳', emoji: '🌞' }
+                    ]
+                },
+                onomatopoeia: ['笃', '哒', '叩'],
+                responses: {
+                    wakeUp: ['（停下敲树）嗯？叫我？', '（从树后探头）刚在抓虫，啥事？'],
+                    busy: ['（边敲边说）忙着喂娃，没空！', '（叼着蚂蚁）等我吃完这口...']
+                },
+                mood: 0.7
+            }
+        };
+
+        // ==================== 状态管理 ====================
+        let currentBird = null;
+        let isWaitingReply = false;
+        let conversations = {}; // 保存对话历史
+
+        // ==================== 工具函数 ====================
+        function getCurrentHour() {
+            return new Date().getHours();
+        }
+
+        function getCurrentTime() {
+            return new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // 检查小鸟是否在线
+        function isBirdActive(birdName) {
+            const bird = BIRDS[birdName];
+            const hour = getCurrentHour();
+            return bird.schedule.activeHours.includes(hour);
+        }
+
+        // 获取小鸟当前状态
+        function getBirdStatus(birdName) {
+            const bird = BIRDS[birdName];
+            if (!isBirdActive(birdName)) {
+                return bird.schedule.restStatus;
+            }
+            
+            const hour = getCurrentHour();
+            let period = 'morning';
+            if (hour < 6) period = 'dawn';
+            else if (hour < 12) period = 'morning';
+            else if (hour < 18) period = 'noon';
+            else period = 'evening';
+            
+            const activity = bird.schedule.activities.find(a => a.period === period) || bird.schedule.activities[0];
+            return `${activity.emoji} ${activity.action}`;
+        }
+
+        // 获取状态标签
+        function getStatusTag(birdName) {
+            const bird = BIRDS[birdName];
+            if (!isBirdActive(birdName)) {
+                return '<span class="status-tag tag-sleeping">离线</span>';
+            }
+            
+            // 有30%的概率显示为忙碌
+            if (Math.random() < 0.3) {
+                return '<span class="status-tag tag-busy">忙碌</span>';
+            }
+            
+            return '<span class="status-tag tag-online">在线</span>';
+        }
+
+        // ==================== 初始化小鸟列表 ====================
+        function initBirdList() {
+            const birdList = document.getElementById('bird-list');
+            birdList.innerHTML = '';
+            
+            Object.keys(BIRDS).forEach(birdName => {
+                const bird = BIRDS[birdName];
+                const birdItem = document.createElement('div');
+                birdItem.className = 'bird-item';
+                birdItem.dataset.bird = birdName;
+                
+                // 获取小鸟状态
+                const isActive = isBirdActive(birdName);
+                const statusClass = isActive ? 'status-online' : 'status-offline';
+                
+                birdItem.innerHTML = `
+                    <div class="bird-avatar" style="background: ${bird.color}">${bird.avatar}</div>
+                    <div class="bird-info">
+                        <div class="bird-name">${bird.nickname} ${getStatusTag(birdName)}</div>
+                        <div class="bird-species">${bird.species}</div>
+                        <div class="bird-status ${statusClass}">${getBirdStatus(birdName)}</div>
+                    </div>
+                `;
+                
+                birdItem.addEventListener('click', () => selectBird(birdName));
+                birdList.appendChild(birdItem);
+                
+                // 初始化对话历史
+                if (!conversations[birdName]) {
+                    conversations[birdName] = [];
+                }
+            });
+        }
+
+        // ==================== 选择小鸟 ====================
+        function selectBird(birdName) {
+            // 如果这只鸟是离线的，就自动唤醒它
+            if (!isBirdActive(birdName)) {
+                BIRDS[birdName].schedule.activeHours.push(getCurrentHour());
+                
+                // 更新小鸟心情（被吵醒可能会不高兴）
+                BIRDS[birdName].mood = Math.max(0.3, BIRDS[birdName].mood - 0.1);
+            }
+            
+            // 更新当前选中的小鸟
+            currentBird = birdName;
+            
+            // 更新UI
+            document.querySelectorAll('.bird-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`.bird-item[data-bird="${birdName}"]`).classList.add('active');
+            
+            const bird = BIRDS[birdName];
+            document.getElementById('current-bird-avatar').innerHTML = bird.avatar;
+            document.getElementById('current-bird-avatar').style.background = bird.color;
+            document.getElementById('current-bird-name').textContent = `${bird.nickname} (${bird.species})`;
+            document.getElementById('current-bird-status').textContent = getBirdStatus(birdName);
+            
+            // 显示聊天记录
+            showConversation(birdName);
+            
+            // 更新小鸟列表中的状态显示
+            updateBirdStatus(birdName);
+        }
+
+        // 更新小鸟状态显示
+        function updateBirdStatus(birdName) {
+            const birdItem = document.querySelector(`.bird-item[data-bird="${birdName}"]`);
+            if (birdItem) {
+                const bird = BIRDS[birdName];
+                const statusClass = isBirdActive(birdName) ? 'status-online' : 'status-offline';
+                const statusEl = birdItem.querySelector('.bird-status');
+                statusEl.className = `bird-status ${statusClass}`;
+                statusEl.textContent = getBirdStatus(birdName);
+                
+                // 更新状态标签
+                const statusTag = birdItem.querySelector('.status-tag');
+                if (statusTag) {
+                    statusTag.outerHTML = getStatusTag(birdName);
+                }
+            }
+        }
+
+        // ==================== 聊天功能 ====================
+        function showConversation(birdName) {
+            const chatMessages = document.getElementById('chat-messages');
+            chatMessages.innerHTML = '';
+            
+            // 添加欢迎消息
+            if (!conversations[birdName] || conversations[birdName].length === 0) {
+                const bird = BIRDS[birdName];
+                const welcomeMsg = getWelcomeMessage(bird);
+                addMessageToChat('bird', welcomeMsg, birdName);
+                conversations[birdName].push({ sender: 'bird', text: welcomeMsg });
+            } else {
+                // 显示历史消息
+                conversations[birdName].forEach(msg => {
+                    addMessageToChat(msg.sender, msg.text, birdName);
+                });
+            }
+        }
+
+        // 获取欢迎消息
+        function getWelcomeMessage(bird) {
+            const isActive = isBirdActive(currentBird);
+            const hour = getCurrentHour();
+            
+            if (!isActive) {
+                return bird.responses.wakeUp[Math.floor(Math.random() * bird.responses.wakeUp.length)];
+            } else if (hour < 12) {
+                return `早上好呀！我是${bird.nickname}，一只${bird.species}~ 今天天气不错呢！`;
+            } else if (hour < 18) {
+                return `下午好！我是${bird.nickname}，${bird.species}一枚~ 想聊点啥？`;
+            } else {
+                return `晚上好！我是${bird.nickname}，夜行性${bird.species}~ 夜生活刚开始！`;
+            }
+        }
+
+        // 添加消息到聊天框
+        function addMessageToChat(sender, text, birdName) {
+            const chatMessages = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            
+            messageDiv.className = `message ${sender === 'bird' ? 'bird-message' : 'my-message'}`;
+            messageDiv.innerHTML = `
+                <div class="message-bubble">${text}</div>
+                <div class="message-time">${getCurrentTime()}</div>
+            `;
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // 生成小鸟回复
+        function generateBirdResponse(message, birdName) {
+            const bird = BIRDS[birdName];
+            const mood = bird.mood;
+            let response = '';
+            
+            // 10%的概率只回复拟声词
+            if (Math.random() < 0.1) {
+                return bird.onomatopoeia[Math.floor(Math.random() * bird.onomatopoeia.length)].repeat(2);
+            }
+            
+            // 根据心情决定回复语气
+            const slang = bird.personality.slang[Math.floor(Math.random() * bird.personality.slang.length)];
+            const emoji = bird.personality.emoji[Math.floor(Math.random() * bird.personality.emoji.length)];
+            const habit = bird.personality.habits[Math.floor(Math.random() * bird.personality.habits.length)];
+            
+            // 多种回复模板
+            const templates = [
+                `${emoji} ${message}？我们${bird.species}通常${habit}，${slang}~`,
+                `${bird.onomatopoeia[0]}...${message} 让我想到我们${habit}的时候${emoji}`,
+                `${slang}！${message}？我们${bird.species}可是很擅长${habit}的${emoji}`,
+                `${emoji} ${message} 让我想起上次${habit}的事，${slang}...`,
+                `（思考中）${message}... 我们${bird.species}${habit}的时候也会这样想${emoji}`
+            ];
+            
+            response = templates[Math.floor(Math.random() * templates.length)];
+            
+            // 偶尔提及当前状态
+            if (Math.random() < 0.2) {
+                const status = getBirdStatus(birdName).split(' ')[1];
+                response += ` （现在正在${status}，好忙）`;
+            }
+            
+            // 心情会影响回复
+            if (mood < 0.4) {
+                response += ' （心情不好，别惹我）';
+            } else if (mood > 0.8) {
+                response += ' （今天心情超好！）';
+            }
+            
+            // 更新小鸟心情（收到消息会变好一点点）
+            bird.mood = Math.min(1, bird.mood + 0.05);
+            
+            return response;
+        }
+
+        // ==================== 发送消息 ====================
+        async function sendMessage() {
+            const input = document.getElementById('message-input');
+            const message = input.value.trim();
+            
+            if (!message || !currentBird) {
+                if (!currentBird) {
+                    addMessageToChat('system', '请先在左侧选择一只小鸟！', 'system');
+                }
+                return;
+            }
+            
+            // 清空输入框
+            input.value = '';
+            
+            // 添加我的消息
+            addMessageToChat('user', message, currentBird);
+            conversations[currentBird].push({ sender: 'user', text: message });
+            
+            // 模拟小鸟打字中
+            isWaitingReply = true;
+            const typingIndicator = document.createElement('div');
+            typingIndicator.className = 'message bird-message';
+            typingIndicator.innerHTML = '<div class="message-bubble">...</div>';
+            document.getElementById('chat-messages').appendChild(typingIndicator);
+            
+            // 模拟思考时间（0.5-2秒）
+            const delay = 500 + Math.random() * 1500;
+            
+            setTimeout(() => {
+                // 移除打字指示器
+                typingIndicator.remove();
+                
+                // 生成小鸟回复
+                const response = generateBirdResponse(message, currentBird);
+                
+                // 添加小鸟回复
+                addMessageToChat('bird', response, currentBird);
+                conversations[currentBird].push({ sender: 'bird', text: response });
+                
+                isWaitingReply = false;
+                
+                // 小鸟被唤醒后，更新状态显示
+                updateBirdStatus(currentBird);
+                document.getElementById('current-bird-status').textContent = getBirdStatus(currentBird);
+                
+            }, delay);
+        }
+
+        // ==================== 事件监听 ====================
+        document.getElementById('send-btn').addEventListener('click', sendMessage);
+
+        document.getElementById('message-input').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // 每分钟更新小鸟状态
+        setInterval(() => {
+            Object.keys(BIRDS).forEach(birdName => {
+                updateBirdStatus(birdName);
+            });
+            
+            // 如果当前有选中的小鸟，更新它的状态显示
+            if (currentBird) {
+                document.getElementById('current-bird-status').textContent = getBirdStatus(currentBird);
+            }
+        }, 60000);
+
+        // ==================== 初始化 ====================
+        initBirdList();
+    </script>
+</body>
+</html>
