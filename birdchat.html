@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>鸟鸟QQ - 手机版</title>
+    <title>鸟鸟聊天室</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+            font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
         }
         
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
-            padding: 0;
             color: #333;
         }
         
@@ -25,21 +24,22 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            background: #f0f0f0;
         }
         
-        /* 头部导航 */
+        /* 顶部导航 */
         .header {
             height: 60px;
-            background: #3a8cff;
-            color: white;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            color: #4a6fa5;
             display: flex;
             align-items: center;
             padding: 0 20px;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            border-bottom: 1px solid rgba(74, 111, 165, 0.1);
         }
         
         .back-btn {
@@ -47,11 +47,13 @@
             margin-right: 15px;
             cursor: pointer;
             display: none;
+            color: #4a6fa5;
         }
         
         .header-title {
             font-size: 18px;
-            font-weight: bold;
+            font-weight: 600;
+            color: #4a6fa5;
         }
         
         /* 主页面 - 通讯录 */
@@ -59,104 +61,102 @@
             flex: 1;
             overflow-y: auto;
             display: block;
+            padding: 20px;
+            background: linear-gradient(to bottom, rgba(245, 247, 250, 0.8), rgba(195, 207, 226, 0.3));
         }
         
-        .search-bar {
-            padding: 15px;
-            background: white;
+        .welcome-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
         }
         
-        .search-input {
-            width: 100%;
-            padding: 12px 20px;
-            border: 1px solid #e0e0e0;
-            border-radius: 25px;
+        .welcome-title {
+            font-size: 24px;
+            color: #4a6fa5;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .welcome-subtitle {
             font-size: 14px;
-            outline: none;
+            color: #7a92b5;
         }
         
-        .search-input:focus {
-            border-color: #3a8cff;
+        .bird-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
         }
         
-        .bird-list {
-            background: white;
-        }
-        
-        .bird-item {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            border-bottom: 1px solid #f0f0f0;
+        .bird-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px 15px;
+            text-align: center;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border: 1px solid rgba(74, 111, 165, 0.1);
         }
         
-        .bird-item:active {
-            background: #f5f5f5;
+        .bird-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(74, 111, 165, 0.15);
+        }
+        
+        .bird-card:active {
+            transform: translateY(-2px);
         }
         
         .bird-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 10px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            margin-right: 15px;
+            font-size: 28px;
+            margin: 0 auto 12px;
             color: white;
-        }
-        
-        .bird-info {
-            flex: 1;
-        }
-        
-        .bird-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 5px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         
         .bird-name {
-            font-weight: bold;
+            font-weight: 600;
             font-size: 16px;
-            color: #333;
+            color: #4a6fa5;
+            margin-bottom: 5px;
         }
         
-        .bird-status-tag {
-            font-size: 10px;
-            padding: 2px 8px;
-            border-radius: 10px;
-            margin-left: 8px;
+        .bird-species {
+            font-size: 12px;
+            color: #7a92b5;
+            margin-bottom: 8px;
         }
         
-        .tag-online {
+        .bird-status {
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        .status-online {
             background: #e8f5e9;
             color: #2e7d32;
         }
         
-        .tag-offline {
+        .status-offline {
             background: #f5f5f5;
-            color: #757575;
-        }
-        
-        .last-message {
-            font-size: 13px;
-            color: #666;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 200px;
-        }
-        
-        .message-time {
-            font-size: 11px;
-            color: #999;
+            color: #9e9e9e;
         }
         
         .message-badge {
-            background: #ff4444;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff6b6b;
             color: white;
             font-size: 10px;
             min-width: 18px;
@@ -167,6 +167,7 @@
             justify-content: center;
             padding: 0 6px;
             font-weight: bold;
+            box-shadow: 0 2px 5px rgba(255, 107, 107, 0.3);
         }
         
         /* 聊天页面 */
@@ -174,27 +175,31 @@
             flex: 1;
             display: none;
             flex-direction: column;
+            background: #f5f7fa;
         }
         
         .chat-header {
             height: 60px;
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             display: flex;
             align-items: center;
-            padding: 0 15px;
-            border-bottom: 1px solid #f0f0f0;
+            padding: 0 20px;
+            border-bottom: 1px solid rgba(74, 111, 165, 0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
         
         .chat-bird-avatar {
             width: 40px;
             height: 40px;
-            border-radius: 8px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 20px;
             margin-right: 12px;
             color: white;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
         }
         
         .chat-bird-info {
@@ -202,65 +207,67 @@
         }
         
         .chat-bird-name {
-            font-weight: bold;
+            font-weight: 600;
             font-size: 16px;
+            color: #4a6fa5;
         }
         
         .chat-bird-status {
             font-size: 12px;
-            color: #666;
+            color: #7a92b5;
         }
         
         .chat-messages {
             flex: 1;
-            padding: 15px;
+            padding: 20px;
             overflow-y: auto;
-            background: #f5f5f5;
+            background: linear-gradient(to bottom, #f0f4f8, #e6ecf4);
         }
         
         .message {
-            margin-bottom: 15px;
-            animation: fadeIn 0.3s;
+            margin-bottom: 20px;
+            animation: fadeIn 0.4s ease;
+            position: relative;
         }
         
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { 
+                opacity: 0; 
+                transform: translateY(10px) scale(0.95); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+            }
         }
         
         .message-bubble {
-            padding: 12px 15px;
-            border-radius: 18px;
+            padding: 14px 18px;
+            border-radius: 20px;
             max-width: 80%;
             word-wrap: break-word;
             font-size: 15px;
-            line-height: 1.4;
-        }
-        
-        .bird-message {
-            align-self: flex-start;
+            line-height: 1.5;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
         }
         
         .bird-message .message-bubble {
             background: white;
-            border: 1px solid #e0e0e0;
-            border-bottom-left-radius: 5px;
-        }
-        
-        .my-message {
-            align-self: flex-end;
+            color: #333;
+            border-top-left-radius: 5px;
+            border: 1px solid rgba(74, 111, 165, 0.1);
         }
         
         .my-message .message-bubble {
-            background: #3a8cff;
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
-            border-bottom-right-radius: 5px;
+            border-top-right-radius: 5px;
         }
         
         .message-time {
             font-size: 11px;
-            color: #999;
-            margin-top: 5px;
+            color: #9e9e9e;
+            margin-top: 8px;
             padding: 0 5px;
         }
         
@@ -269,148 +276,197 @@
         }
         
         .wake-up-message {
-            background: #fff3e0;
-            border: 1px dashed #ffb74d;
-            border-radius: 10px;
-            padding: 10px 15px;
-            margin: 10px 0;
+            background: linear-gradient(135deg, #fff9c4, #ffe0b2);
+            border-radius: 15px;
+            padding: 12px 20px;
+            margin: 15px 0;
             text-align: center;
             font-size: 13px;
             color: #e65100;
+            box-shadow: 0 3px 10px rgba(255, 193, 7, 0.2);
+            border: 1px solid rgba(255, 193, 7, 0.3);
         }
         
         .input-area {
-            padding: 15px;
-            background: white;
-            border-top: 1px solid #e0e0e0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-top: 1px solid rgba(74, 111, 165, 0.1);
         }
         
         .input-container {
             display: flex;
+            align-items: flex-end;
+            background: white;
+            border-radius: 25px;
+            padding: 5px 5px 5px 20px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.05);
+            border: 1px solid rgba(74, 111, 165, 0.1);
         }
         
         #message-input {
             flex: 1;
-            padding: 12px 15px;
-            border: 1px solid #e0e0e0;
-            border-radius: 25px;
+            padding: 12px 0;
+            border: none;
             font-size: 15px;
             outline: none;
             resize: none;
-            min-height: 50px;
+            min-height: 24px;
             max-height: 100px;
-        }
-        
-        #message-input:focus {
-            border-color: #3a8cff;
+            background: transparent;
+            line-height: 1.5;
         }
         
         #send-btn {
             width: 50px;
-            margin-left: 10px;
-            background: #3a8cff;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             border: none;
-            border-radius: 25px;
-            font-size: 14px;
-            cursor: pointer;
-        }
-        
-        /* 底部导航 */
-        .tab-bar {
-            height: 60px;
-            background: white;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            border-top: 1px solid #e0e0e0;
-        }
-        
-        .tab-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #999;
-            padding: 8px 15px;
-            cursor: pointer;
-        }
-        
-        .tab-item.active {
-            color: #3a8cff;
-        }
-        
-        .tab-icon {
+            border-radius: 50%;
             font-size: 20px;
-            margin-bottom: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            margin-left: 10px;
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
         }
         
-        .tab-label {
-            font-size: 11px;
+        #send-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(102, 126, 234, 0.4);
         }
         
-        /* 响应式调整 */
-        @media (max-width: 480px) {
-            .container {
-                height: 100vh;
-            }
-            
-            .bird-item {
-                padding: 12px 15px;
-            }
-            
-            .message-bubble {
-                max-width: 85%;
-            }
+        #send-btn:active {
+            transform: scale(0.95);
         }
         
         .typing-indicator {
             align-self: flex-start;
             background: white;
-            padding: 8px 15px;
-            border-radius: 18px;
-            border: 1px solid #e0e0e0;
+            padding: 12px 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(74, 111, 165, 0.1);
             display: inline-block;
         }
         
         .typing-dots {
-            display: inline-block;
+            display: flex;
+            gap: 4px;
         }
         
         .typing-dots span {
-            display: inline-block;
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: #ccc;
-            margin: 0 2px;
+            background: #4a6fa5;
+            opacity: 0.4;
             animation: typing 1.4s infinite;
         }
         
+        .typing-dots span:nth-child(1) { animation-delay: 0s; }
         .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
         .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
         
         @keyframes typing {
-            0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-5px); }
+            0%, 60%, 100% { 
+                opacity: 0.4;
+                transform: translateY(0); 
+            }
+            30% { 
+                opacity: 1;
+                transform: translateY(-3px); 
+            }
+        }
+        
+        /* 自然元素装饰 */
+        .leaf-decoration {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .leaf1 {
+            top: 20px;
+            right: 20px;
+            font-size: 40px;
+            color: rgba(74, 111, 165, 0.1);
+            transform: rotate(45deg);
+        }
+        
+        .leaf2 {
+            bottom: 20px;
+            left: 20px;
+            font-size: 30px;
+            color: rgba(74, 111, 165, 0.1);
+            transform: rotate(-30deg);
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 480px) {
+            .bird-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+            
+            .bird-card {
+                padding: 15px 10px;
+            }
+            
+            .message-bubble {
+                max-width: 85%;
+            }
+            
+            .chat-messages, .input-area {
+                padding: 15px;
+            }
+        }
+        
+        /* 小鸟卡片位置装饰 */
+        .bird-card {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .bird-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .bird-card:hover::before {
+            transform: scaleX(1);
         }
     </style>
 </head>
 <body>
+    <!-- 自然装饰元素 -->
+    <div class="leaf-decoration leaf1">🍃</div>
+    <div class="leaf-decoration leaf2">🍂</div>
+    
     <div class="container">
-        <!-- 头部导航 -->
+        <!-- 顶部导航 -->
         <div class="header">
             <div class="back-btn" id="back-btn">←</div>
-            <div class="header-title" id="header-title">鸟鸟通讯录</div>
+            <div class="header-title" id="header-title">鸟鸟聊天室</div>
         </div>
         
         <!-- 主页面 - 通讯录 -->
         <div id="main-page">
-            <div class="search-bar">
-                <input type="text" class="search-input" placeholder="搜索小鸟..." id="search-input">
+            <div class="welcome-header">
+                <div class="welcome-title">🌸 鸟鸟聊天室</div>
+                <div class="welcome-subtitle">选择一只小鸟开始聊天，它们都有独特的性格哦~</div>
             </div>
             
-            <div class="bird-list" id="bird-list">
-                <!-- 小鸟列表动态生成 -->
+            <div class="bird-grid" id="bird-grid">
+                <!-- 小鸟卡片动态生成 -->
             </div>
         </div>
         
@@ -425,32 +481,14 @@
             </div>
             
             <div class="chat-messages" id="chat-messages">
-                <div class="wake-up-message" id="wake-up-message" style="display: none;">
-                    🎉 小鸟被唤醒上线了！
-                </div>
+                <!-- 聊天消息动态生成 -->
             </div>
             
             <div class="input-area">
                 <div class="input-container">
                     <textarea id="message-input" placeholder="输入消息..." rows="1"></textarea>
-                    <button id="send-btn">发送</button>
+                    <button id="send-btn">→</button>
                 </div>
-            </div>
-        </div>
-        
-        <!-- 底部导航 -->
-        <div class="tab-bar">
-            <div class="tab-item active">
-                <div class="tab-icon">💬</div>
-                <div class="tab-label">聊天</div>
-            </div>
-            <div class="tab-item">
-                <div class="tab-icon">👥</div>
-                <div class="tab-label">通讯录</div>
-            </div>
-            <div class="tab-item">
-                <div class="tab-icon">⚙️</div>
-                <div class="tab-label">设置</div>
             </div>
         </div>
     </div>
@@ -459,323 +497,294 @@
         // ==================== 鸟类数据库 ====================
         const BIRDS = {
             magpie: {
-                nickname: "喜总",
+                nickname: "喜鹊",
                 species: "喜鹊",
                 avatar: "鹊",
                 color: "linear-gradient(135deg, #000 50%, #fff 50%)",
-                offlineStatus: "🕶️ 在找亮晶晶的东西",
+                offlineStatus: "寻找亮晶晶的东西",
                 mood: 0.8,
                 unreadCount: 0,
-                hasBeenContacted: false,
                 hasBeenMessaged: false,
                 schedule: { activeHours: [] },
                 personality: {
                     type: "extroverted",
-                    slang: ["笑死", "绝绝子", "栓Q", "咱就是说", "YYDS"],
-                    emoji: ["😎", "🤪", "👻"],
-                    habits: ["捡亮闪闪的东西", "在电线杆上开会", "围观人类吵架"]
+                    slang: ["笑死", "绝绝子", "哈哈", "有趣"],
+                    emoji: ["✨", "😄", "💫"],
+                    habits: ["捡亮闪闪的东西", "在电线杆上开会"]
                 },
                 onomatopoeia: ["喳", "嘎", "啭"],
                 lastMessage: "今天天气不错~",
                 lastTime: "刚刚"
             },
             azureWingedMaggie: {
-                nickname: "小灰灰",
+                nickname: "灰喜鹊",
                 species: "灰喜鹊",
                 avatar: "灰",
                 color: "linear-gradient(135deg, #87CEEB 50%, #A9A9A9 50%)",
-                offlineStatus: "😴 在树上睡回笼觉",
+                offlineStatus: "在树上睡回笼觉",
                 mood: 0.9,
                 unreadCount: 0,
-                hasBeenContacted: false,
                 hasBeenMessaged: false,
                 schedule: { activeHours: [] },
                 personality: {
                     type: "social",
-                    slang: ["贴贴", "呜呜", "好耶", "抱抱"],
-                    emoji: ["🥺", "💙", "✨"],
-                    habits: ["追着同伴要理毛", "在树丛里尖叫"]
+                    slang: ["贴贴", "一起玩", "好呀", "开心"],
+                    emoji: ["🥰", "💕", "✨"],
+                    habits: ["追着同伴要理毛", "在树丛里玩耍"]
                 },
                 onomatopoeia: ["啾", "唧", "呀"],
                 lastMessage: "一个人好无聊...",
                 lastTime: "10:30"
             },
             blackbird: {
-                nickname: "黑旋风",
+                nickname: "乌鸫",
                 species: "乌鸫",
                 avatar: "鸫",
                 color: "linear-gradient(135deg, #000 50%, #FFA500 50%)",
-                offlineStatus: "🍜 嗦蚯蚓面中",
+                offlineStatus: "嗦蚯蚓面中",
                 mood: 0.7,
                 unreadCount: 0,
-                hasBeenContacted: false,
                 hasBeenMessaged: false,
                 schedule: { activeHours: [] },
                 personality: {
                     type: "proud",
-                    slang: ["呵", "记小本本", "你谁", "莫挨老子"],
-                    emoji: ["👁️", "🍜", "🎵"],
-                    habits: ["拔蚯蚓像嗦面", "模仿汽车报警声", "记仇"]
+                    slang: ["记得", "有意思", "有趣"],
+                    emoji: ["🍜", "🎵", "👀"],
+                    habits: ["拔蚯蚓像嗦面", "模仿各种声音"]
                 },
                 onomatopoeia: ["嘀", "咕", "铃"],
-                lastMessage: "我记住你的脸了！",
+                lastMessage: "记住你的脸了！",
                 lastTime: "09:15"
             },
             coot: {
-                nickname: "白脚丫",
+                nickname: "白骨顶",
                 species: "白骨顶",
                 avatar: "顶",
                 color: "linear-gradient(135deg, #000 50%, #FFF 50%)",
-                offlineStatus: "👣 盯着大脚发呆",
+                offlineStatus: "盯着大脚发呆",
                 mood: 0.5,
                 unreadCount: 0,
-                hasBeenContacted: false,
                 hasBeenMessaged: false,
                 schedule: { activeHours: [] },
                 personality: {
                     type: "gloomy",
-                    slang: ["...", "烦", "别理我", "走开"],
-                    emoji: ["👣", "🌫️", "💀"],
-                    habits: ["盯着自己的大脚发呆", "突然从水里冒出来"]
+                    slang: ["嗯", "好吧", "可以"],
+                    emoji: ["👣", "🌿", "💧"],
+                    habits: ["看着自己的大脚", "在水面游荡"]
                 },
                 onomatopoeia: ["噗", "咳", "哒"],
-                lastMessage: "我的脚为什么这么大...",
+                lastMessage: "脚为什么这么大...",
                 lastTime: "昨天"
             },
             nightHeron: {
-                nickname: "夜师傅",
+                nickname: "夜鹭",
                 species: "夜鹭",
                 avatar: "鹭",
                 color: "linear-gradient(135deg, #4682B4 50%, #708090 50%)",
-                offlineStatus: "🐧 cos企鹅中，勿扰",
+                offlineStatus: "休息中，勿扰",
                 mood: 0.4,
                 unreadCount: 0,
-                hasBeenContacted: false,
                 hasBeenMessaged: false,
                 schedule: { activeHours: [] },
                 personality: {
                     type: "stoner",
-                    slang: ["zzz", "呆", "我是企鹅", "勿扰"],
-                    emoji: ["🐧", "🥱", "🛸"],
-                    habits: ["缩脖子装企鹅", "站着睡觉", "凌晨去鱼市蹭饭"]
+                    slang: ["唔", "大概", "可能"],
+                    emoji: ["🌙", "💤", "🐟"],
+                    habits: ["站着休息", "观察水面", "夜间活动"]
                 },
                 onomatopoeia: ["哇", "呃", "呱"],
-                lastMessage: "我是谁...我在哪...",
+                lastMessage: "我是谁...",
                 lastTime: "昨天"
             },
             spottedDove: {
-                nickname: "古咕固",
+                nickname: "斑鸠",
                 species: "珠颈斑鸠",
                 avatar: "鸠",
                 color: "linear-gradient(135deg, #DDA0DD 50%, #F5F5DC 50%)",
-                offlineStatus: "🥚 孵蛋中，蛋又掉了",
+                offlineStatus: "孵蛋中",
                 mood: 0.9,
                 unreadCount: 0,
-                hasBeenContacted: false,
                 hasBeenMessaged: false,
                 schedule: { activeHours: [] },
                 personality: {
                     type: "airhead",
-                    slang: ["咕", "固", "啊这", "救命", "摆烂"],
-                    emoji: ["🕊️", "💕", "🥺"],
-                    habits: ["两根树枝就搭窝", "被红隼追着跑"]
+                    slang: ["咕", "固", "啊呀"],
+                    emoji: ["🥚", "🌳", "🏠"],
+                    habits: ["简单搭窝", "咕咕叫", "下蛋"]
                 },
                 onomatopoeia: ["咕", "固", "古"],
                 lastMessage: "我的蛋呢？！",
                 lastTime: "14:20"
             },
             redstart: {
-                nickname: "宏伟水渠",
+                nickname: "水鸲",
                 species: "红尾水鸲",
                 avatar: "鸲",
                 color: "linear-gradient(135deg, #8B0000 50%, #4B0082 50%)",
-                offlineStatus: "💃 在溪边摇尾巴",
+                offlineStatus: "在溪边玩耍",
                 mood: 0.8,
                 unreadCount: 0,
-                hasBeenContacted: false,
                 hasBeenMessaged: false,
                 schedule: { activeHours: [] },
                 personality: {
                     type: "energetic",
-                    slang: ["于一", "冲", "芜湖", "起飞"],
-                    emoji: ["💃", "🔥", "🌊"],
-                    habits: ["尾巴像扇子一样摇", "在溪边石头上蹦迪"]
+                    slang: ["于一", "冲呀", "开心"],
+                    emoji: ["💃", "🌊", "🎶"],
+                    habits: ["摇尾巴", "溪边玩耍", "唱歌"]
                 },
                 onomatopoeia: ["于", "一", "叮"],
                 lastMessage: "于一！于一！",
                 lastTime: "刚刚"
             },
             bulbul: {
-                nickname: "白头佬",
+                nickname: "白头鹎",
                 species: "白头鹎",
                 avatar: "鹎",
                 color: "linear-gradient(135deg, #FFF 50%, #32CD32 50%)",
-                offlineStatus: "🌸 在花丛中吸蜜",
+                offlineStatus: "在花丛中吸蜜",
                 mood: 0.85,
                 unreadCount: 0,
-                hasBeenContacted: false,
                 hasBeenMessaged: false,
                 schedule: { activeHours: [] },
                 personality: {
                     type: "elderly",
-                    slang: ["哎哟", "不错", "甜啊", "舒服"],
-                    emoji: ["🌸", "🍯", "👴"],
-                    habits: ["把头埋进花里吸蜜", "在树顶发表演讲"]
+                    slang: ["不错", "甜啊", "舒服"],
+                    emoji: ["🌸", "🍯", "🌳"],
+                    habits: ["吸花蜜", "树顶休息", "唱歌"]
                 },
                 onomatopoeia: ["啁", "哩", "啾"],
                 lastMessage: "这花蜜真甜！",
                 lastTime: "11:45"
             },
             shrike: {
-                nickname: "刽子手",
+                nickname: "伯劳",
                 species: "棕背伯劳",
                 avatar: "劳",
                 color: "linear-gradient(135deg, #8B4513 50%, #FFF 50%)",
-                offlineStatus: "🍢 在做虫串",
+                offlineStatus: "觅食中",
                 mood: 0.6,
                 unreadCount: 0,
-                hasBeenContacted: false,
                 hasBeenMessaged: false,
                 schedule: { activeHours: [] },
                 personality: {
                     type: "edgy",
-                    slang: ["杀", "串", "挂", "狠"],
-                    emoji: ["🔪", "🍢", "💀"],
-                    habits: ["把虫子插在刺上风干", "模仿猛禽叫声吓唬小鸟"]
+                    slang: ["有趣", "厉害", "可以"],
+                    emoji: ["🦗", "🌿", "⚡"],
+                    habits: ["捕捉昆虫", "站在高处", "储存食物"]
                 },
                 onomatopoeia: ["嘎", "吱", "嘶"],
-                lastMessage: "新做的蚂蚱串！",
+                lastMessage: "抓到虫子了！",
                 lastTime: "昨天"
             }
         };
 
-        // ==================== 智能回复库 ====================
+        // ==================== 优化后的回复库 ====================
         const BIRD_RESPONSES = {
-            // 喜鹊
+            // 喜鹊 - 聪明活泼
             magpie: {
                 informative: [
-                    "你知道吗？我们喜鹊的羽毛在阳光下其实是五彩斑斓的黑，有蓝绿紫色的金属光泽哦！✨",
-                    "最近我在研究人类的吵架技巧，发现'你没事吧'这句话杀伤力很大，要学吗？😎",
-                    "我看到一篇论文说喜鹊是少数能通过镜子测试的鸟类，这说明我们很聪明！",
-                    "今天我偷听到大妈们说菜价又涨了，人类的钱真难赚啊...",
-                    "我们喜鹊家族有个传统：看到亮晶晶的东西必须捡回来，这是刻在DNA里的！"
+                    "你知道吗？我们喜鹊的羽毛在阳光下有蓝紫色的金属光泽，可漂亮了！",
+                    "最近发现人类的亮晶晶东西特别多，尤其是那个叫'手机'的，会发光！",
+                    "我们喜鹊家族很聪明，能记住哪些人对我们好，哪些人不好。",
+                    "今天看到小朋友掉了颗玻璃珠，在阳光下闪闪发光，我捡到了！",
+                    "电线杆上的风景特别好，能看到整个公园，你要不要也来坐坐？"
                 ],
                 casual: [
-                    "今天天气不错，适合去广场偷听大妈聊天~",
-                    "看我找到的玻璃珠！亮不亮？",
-                    "刚才跟乌鸦吵了一架，我赢了！",
-                    "你觉得银色和金色哪个更适合我？",
-                    "隔壁灰喜鹊又偷我东西，气死！"
+                    "今天天气真好，适合出门逛逛~",
+                    "刚才看到一只蝴蝶，翅膀也是亮晶晶的！",
+                    "你在做什么有趣的事吗？",
+                    "我觉得银色的东西最闪亮了，你呢？",
+                    "公园里今天人好多，肯定掉了不少好东西！"
                 ],
                 lazy: [
-                    "嗯...还行吧...",
-                    "你说啥？我在看亮片...",
-                    "随便啦...",
-                    "哦...这样啊...",
-                    "哈哈...还行..."
+                    "嗯...有点累...",
+                    "在休息呢...",
+                    "今天不想动...",
+                    "看看云朵也不错...",
+                    "随便聊聊吧..."
                 ]
             },
             
-            // 夜鹭
+            // 夜鹭 - 呆萌但偶尔有深度
             nightHeron: {
                 informative: [
-                    "其实我们夜鹭是夜行性的，白天大部分时间都在休息，所以看起来比较呆~",
-                    "你知道吗？夜鹭的幼鸟是白色的，要长大才会变成蓝灰色，像换了身衣服！",
-                    "我最近在研究企鹅的走路姿势，发现它们重心低，我们重心高，所以学不像...",
-                    "我们夜鹭捕鱼很厉害的，能在水里一动不动等好久，然后突然出击！",
-                    "其实'夜师傅'这个外号是观鸟人起的，因为夜鹭喜欢站在水边像老师傅钓鱼~"
+                    "其实我们是夜行性的，白天大部分时间都在休息，所以看起来有点呆。",
+                    "你知道吗？夜鹭的幼鸟是白色的，要长大才会变成蓝灰色。",
+                    "我观察人类钓鱼很久了，他们总是一动不动的，跟我们真像。",
+                    "水里的鱼游得好快，要等它们放松警惕才能抓到。",
+                    "晚上的公园很安静，只有青蛙在叫，你要不要也来看看？"
                 ],
                 casual: [
-                    "今天太阳好大，找个树荫躲一下...",
-                    "刚才看到一条鱼，可惜游走了...",
-                    "这姿势像不像在思考鸟生？",
-                    "晚上准备去鱼市逛逛...",
-                    "站久了脚有点麻..."
+                    "今天太阳不错，晒得暖暖的...",
+                    "刚才有条鱼游过去了，可惜没抓到。",
+                    "你吃饭了吗？我还没吃...",
+                    "站久了脚有点麻，换只脚站。",
+                    "云朵的形状真有趣..."
                 ],
                 lazy: [
-                    "zzz...好困...",
-                    "我是企鹅...大概...",
-                    "勿扰...睡觉中...",
-                    "呆...",
-                    "困...想睡..."
+                    "唔...困了...",
+                    "想睡觉...",
+                    "不想动...",
+                    "发呆中...",
+                    "zZZ..."
                 ]
             },
             
-            // 其他小鸟的回复库...
+            // 乌鸫 - 记仇但有趣
             blackbird: {
                 informative: [
-                    "研究发现乌鸫能记住至少50张不同的人脸，所以别惹我，我真能记住你！👁️",
-                    "我们乌鸫吃蚯蚓时会先把它在地上摔打，等蚯蚓晕了再嗦，这叫预处理！",
-                    "我能模仿20多种声音，从汽车报警到手机铃声，要听吗？🎵",
-                    "乌鸫的歌声是鸟类里最复杂的之一，我们能唱出完整的旋律！",
-                    "我们喜欢在清晨唱歌，因为那时声音传播得最远，方圆500米都能听到！"
+                    "研究表明乌鸫能记住很多张人脸，所以我记得你上次来过。",
+                    "我们吃蚯蚓前会先把它摔晕，这样吃起来更方便。",
+                    "我能模仿20多种声音，从汽车报警到手机铃声都会。",
+                    "乌鸫的歌声是鸟类里最复杂的，我们能唱出完整的旋律。",
+                    "清晨唱歌是因为那时空气湿润，声音传得最远。"
                 ],
                 casual: [
-                    "今天又抓到一条超长的'乌冬面'！🍜",
-                    "这片草坪归我管，懂？",
-                    "小本本又厚了，都是仇人！",
-                    "早上唱歌是为了扰民，爽！",
-                    "别惹我，我记性好得很！"
+                    "今天抓到一条很肥的蚯蚓，午餐有着落了！",
+                    "你在忙什么？我正巡逻我的领地。",
+                    "刚才有只猫想偷袭我，被我吓跑了。",
+                    "这片草地归我管，你要来玩吗？",
+                    "学会了新的警报声，要不要听听看？"
                 ],
                 lazy: [
-                    "呵...就这？",
-                    "记小本本了...",
-                    "你谁啊...",
-                    "烦...",
-                    "啧..."
+                    "嗯...还行...",
+                    "在休息...",
+                    "有点累...",
+                    "不想说话...",
+                    "随便..."
                 ]
             },
             
-            // 珠颈斑鸠
-            spottedDove: {
-                informative: [
-                    "我们珠颈斑鸠搭窝真的只用两根树枝，因为我们是'敷衍大师'！🥚",
-                    "你知道吗？珠颈斑鸠的'珍珠项链'其实是黑色的斑点，每只鸟都不一样！",
-                    "我们一次只下2个蛋，而且爸妈轮流孵，还挺负责的~",
-                    "'古咕固'这个叫声是我们的求偶歌，意思是'我在这儿，单身可撩'！",
-                    "虽然搭窝敷衍，但我们孵蛋很认真，要18天才能孵出来呢！"
-                ],
-                casual: [
-                    "咕咕咕~我是不是很网红？💕",
-                    "今天又下了一个蛋，希望别掉下去...",
-                    "两根树枝搭窝，完美！啊这...好像歪了...",
-                    "红隼今天没来追我，开心！",
-                    "空调外机是我最爱的舞台！"
-                ],
-                lazy: [
-                    "咕...好累...",
-                    "固...想睡...",
-                    "摆烂了...",
-                    "寄了...完蛋...",
-                    "救命...好困..."
-                ]
-            },
-            
-            // 其他小鸟的回复库（简略版）
+            // 其他小鸟回复库...
             azureWingedMaggie: {
-                informative: ["灰喜鹊是群居鸟类，我们喜欢几十只一起生活，特别热闹！"],
-                casual: ["要一起玩吗？", "你看我的羽毛好看吗？", "一个人好无聊..."],
-                lazy: ["唔...想睡...", "嗯...好吧...", "抱抱..."]
+                informative: ["我们灰喜鹊喜欢群居，经常几十只一起玩，特别热闹。"],
+                casual: ["要一起玩吗？我最喜欢和朋友玩了！", "你看我的羽毛好看吗？", "今天天气真好~"],
+                lazy: ["唔...有点困...", "在休息呢...", "抱抱..."]
             },
             coot: {
-                informative: ["白骨顶的大脚是蹼足，能在水上'跑步'，很神奇的！👣"],
-                casual: ["水好冷...", "鸭子又欺负我...", "我想一个人静静..."],
-                lazy: ["...", "烦...", "走开..."]
+                informative: ["白骨顶的大脚是蹼足，能在水上'跑步'，很有趣的。"],
+                casual: ["水有点凉...", "你在做什么？", "我想一个人待会儿..."],
+                lazy: ["...", "嗯...", "哦..."]
+            },
+            spottedDove: {
+                informative: ["我们珠颈斑鸠的窝虽然简单，但孵蛋可认真了，要18天呢！"],
+                casual: ["咕咕咕~今天心情不错！", "希望蛋能平安孵出来...", "简单的窝也很舒服~"],
+                lazy: ["咕...好累...", "想睡觉...", "休息中..."]
             },
             redstart: {
-                informative: ["红尾水鸲的尾巴摇动是为了保持平衡，顺便吸引异性！💃"],
-                casual: ["于一！于一！", "溪水好凉快！", "看我摇尾巴！"],
-                lazy: ["于一...好累...", "冲不动了...", "歇会..."]
+                informative: ["红尾水鸲摇尾巴是为了保持平衡，顺便吸引异性注意。"],
+                casual: ["于一！于一！溪水好凉快！", "看我摇尾巴！", "今天好开心！"],
+                lazy: ["于一...累了...", "休息一下...", "唔..."]
             },
             bulbul: {
-                informative: ["白头鹎特别爱吃花蜜，我们的舌头是刷子状的，专门吸蜜！🌸"],
-                casual: ["这花蜜真甜！", "我要开始演讲了！", "跟蜜蜂吵了一架..."],
-                lazy: ["哎哟...老了...", "不错...还行...", "舒服..."]
+                informative: ["白头鹎的舌头是刷子状的，专门用来吸花蜜，可方便了。"],
+                casual: ["这朵花蜜特别甜！", "树顶的风景真好~", "今天的花开得真美。"],
+                lazy: ["哎哟...休息会儿...", "不错...", "舒服..."]
             },
             shrike: {
-                informative: ["棕背伯劳把猎物插在刺上是为了储存食物，这是我们的冰箱！🍢"],
-                casual: ["新做的蚂蚱串！", "今天又干掉一只大蝗虫！", "看我的爪子！"],
-                lazy: ["杀...累了...", "串...好麻烦...", "挂...随便吧..."]
+                informative: ["我们把猎物插在刺上是为了储存食物，就像人类的冰箱。"],
+                casual: ["抓到一只大蚂蚱！", "今天收获不错~", "站在高处看得好远。"],
+                lazy: ["累了...", "休息中...", "唔..."]
             }
         };
 
@@ -783,15 +792,21 @@
         let currentBird = null;
         let isWaitingReply = false;
         let conversations = {};
+        let recentResponses = {}; // 记录最近回复，避免重复
         let activeMessageInterval = null;
+
+        // 初始化最近回复记录
+        Object.keys(BIRDS).forEach(birdName => {
+            recentResponses[birdName] = [];
+        });
 
         // ==================== 页面切换功能 ====================
         function showMainPage() {
             document.getElementById('main-page').style.display = 'block';
             document.getElementById('chat-page').style.display = 'none';
             document.getElementById('back-btn').style.display = 'none';
-            document.getElementById('header-title').textContent = '鸟鸟通讯录';
-            initBirdList(); // 刷新列表
+            document.getElementById('header-title').textContent = '鸟鸟聊天室';
+            initBirdGrid();
         }
         
         function showChatPage(birdName) {
@@ -802,7 +817,7 @@
             const bird = BIRDS[birdName];
             document.getElementById('chat-bird-avatar').innerHTML = bird.avatar;
             document.getElementById('chat-bird-avatar').style.background = bird.color;
-            document.getElementById('chat-bird-name').textContent = `${bird.nickname} (${bird.species})`;
+            document.getElementById('chat-bird-name').textContent = `${bird.nickname}`;
             
             const status = isBirdActive(birdName) ? '🟢 在线' : '💤 离线';
             document.getElementById('chat-bird-status').textContent = status;
@@ -810,6 +825,10 @@
             
             currentBird = birdName;
             loadConversation(birdName);
+            
+            // 清空该小鸟的未读消息
+            bird.unreadCount = 0;
+            initBirdGrid();
         }
 
         // ==================== 工具函数 ====================
@@ -828,42 +847,37 @@
             if (!isBirdActive(birdName)) {
                 return bird.offlineStatus;
             }
-            return '🟢 在线';
+            return '在线';
         }
 
-        // ==================== 初始化小鸟列表 ====================
-        function initBirdList() {
-            const birdList = document.getElementById('bird-list');
-            birdList.innerHTML = '';
+        // ==================== 初始化小鸟网格 ====================
+        function initBirdGrid() {
+            const birdGrid = document.getElementById('bird-grid');
+            birdGrid.innerHTML = '';
             
             Object.keys(BIRDS).forEach(birdName => {
                 const bird = BIRDS[birdName];
-                const birdItem = document.createElement('div');
-                birdItem.className = 'bird-item';
-                birdItem.dataset.bird = birdName;
+                const birdCard = document.createElement('div');
+                birdCard.className = 'bird-card';
+                birdCard.dataset.bird = birdName;
                 
                 const isActive = isBirdActive(birdName);
                 
-                birdItem.innerHTML = `
+                birdCard.innerHTML = `
                     <div class="bird-avatar" style="background: ${bird.color}">${bird.avatar}</div>
-                    <div class="bird-info">
-                        <div class="bird-header">
-                            <div class="bird-name">${bird.nickname}</div>
-                            <div class="bird-status-tag ${isActive ? 'tag-online' : 'tag-offline'}">
-                                ${isActive ? '在线' : '离线'}
-                            </div>
-                        </div>
-                        <div class="last-message">${bird.lastMessage}</div>
+                    <div class="bird-name">${bird.nickname}</div>
+                    <div class="bird-species">${bird.species}</div>
+                    <div class="bird-status ${isActive ? 'status-online' : 'status-offline'}">
+                        ${isActive ? '🟢 在线' : '💤 离线'}
                     </div>
-                    <div class="message-time">${bird.lastTime}</div>
                     ${bird.unreadCount > 0 ? `<div class="message-badge">${bird.unreadCount}</div>` : ''}
                 `;
                 
-                birdItem.addEventListener('click', () => {
+                birdCard.addEventListener('click', () => {
                     showChatPage(birdName);
                 });
                 
-                birdList.appendChild(birdItem);
+                birdGrid.appendChild(birdCard);
                 
                 if (!conversations[birdName]) {
                     conversations[birdName] = [];
@@ -912,24 +926,46 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
-        // 智能回复生成
-        function generateBirdResponse(userMessage) {
+        // 智能回复生成（避免重复）
+        function generateBirdResponse() {
             const bird = BIRDS[currentBird];
             const responses = BIRD_RESPONSES[currentBird];
             
-            if (!responses) return "（歪头）咕？";
+            if (!responses) return "（思考中）...";
             
-            // 决定回复类型：信息型(30%)、日常型(50%)、懒惰型(20%)
+            // 决定回复类型：信息型(40%)、日常型(40%)、懒惰型(20%)
             const rand = Math.random();
             let responseType = 'casual';
-            if (rand < 0.3) responseType = 'informative';
+            if (rand < 0.4) responseType = 'informative';
             else if (rand < 0.8) responseType = 'casual';
             else responseType = 'lazy';
             
             const pool = responses[responseType] || responses.casual;
-            if (!pool || pool.length === 0) return "（思考中）...";
+            if (!pool || pool.length === 0) return "（歪头）咕？";
             
-            return pool[Math.floor(Math.random() * pool.length)];
+            // 获取最近5条回复
+            const recent = recentResponses[currentBird] || [];
+            
+            // 从池中排除最近使用过的回复
+            let availableResponses = pool.filter(response => !recent.includes(response));
+            
+            // 如果所有回复都用过了，清空历史记录
+            if (availableResponses.length === 0) {
+                recentResponses[currentBird] = [];
+                availableResponses = pool;
+            }
+            
+            // 随机选择一条回复
+            const response = availableResponses[Math.floor(Math.random() * availableResponses.length)];
+            
+            // 添加到最近回复记录
+            recent.push(response);
+            if (recent.length > 5) {
+                recent.shift();
+            }
+            recentResponses[currentBird] = recent;
+            
+            return response;
         }
 
         // ==================== 发送消息 ====================
@@ -954,10 +990,10 @@
                 document.getElementById('chat-bird-status').textContent = '🟢 在线';
                 
                 // 更新通讯录中的状态
-                const birdItem = document.querySelector(`.bird-item[data-bird="${currentBird}"] .bird-status-tag`);
-                if (birdItem) {
-                    birdItem.className = 'bird-status-tag tag-online';
-                    birdItem.textContent = '在线';
+                const birdCard = document.querySelector(`.bird-card[data-bird="${currentBird}"] .bird-status`);
+                if (birdCard) {
+                    birdCard.className = 'bird-status status-online';
+                    birdCard.textContent = '🟢 在线';
                 }
             }
             
@@ -987,13 +1023,13 @@
             document.getElementById('chat-messages').appendChild(typingDiv);
             
             // 模拟思考时间
-            const delay = 1000 + Math.random() * 2000;
+            const delay = 800 + Math.random() * 1500;
             
             setTimeout(() => {
                 typingDiv.remove();
                 
                 // 生成回复
-                const response = generateBirdResponse(message);
+                const response = generateBirdResponse();
                 
                 // 添加回复
                 addMessageToChat('bird', response, currentBird);
@@ -1025,13 +1061,13 @@
         });
 
         // ==================== 初始化 ====================
-        initBirdList();
+        initBirdGrid();
         
-        // 随机发消息功能
+        // 小鸟主动发消息功能
         activeMessageInterval = setInterval(() => {
-            if (Math.random() < 0.4) { // 40%概率
+            if (Math.random() < 0.3) { // 30%概率
                 const activeBirds = Object.keys(BIRDS).filter(birdName => 
-                    isBirdActive(birdName) && birdName !== currentBird && conversations[birdName]?.length > 0
+                    isBirdActive(birdName) && birdName !== currentBird
                 );
                 
                 if (activeBirds.length === 0) return;
@@ -1039,28 +1075,26 @@
                 const randomBirdName = activeBirds[Math.floor(Math.random() * activeBirds.length)];
                 const bird = BIRDS[randomBirdName];
                 
-                if (bird) {
+                if (bird && BIRD_RESPONSES[randomBirdName]) {
                     const responses = BIRD_RESPONSES[randomBirdName];
-                    if (responses) {
-                        const pool = responses.casual || [];
-                        if (pool.length > 0) {
-                            const message = pool[Math.floor(Math.random() * pool.length)];
-                            bird.lastMessage = message;
-                            bird.lastTime = '刚刚';
-                            
-                            if (!conversations[randomBirdName]) conversations[randomBirdName] = [];
-                            conversations[randomBirdName].push({ sender: 'bird', text: message });
-                            
-                            if (currentBird !== randomBirdName) {
-                                bird.unreadCount++;
-                            }
-                            
-                            initBirdList();
+                    const pool = responses.casual || [];
+                    if (pool.length > 0) {
+                        const response = pool[Math.floor(Math.random() * pool.length)];
+                        bird.lastMessage = response.length > 20 ? response.substring(0, 20) + '...' : response;
+                        bird.lastTime = '刚刚';
+                        
+                        if (!conversations[randomBirdName]) conversations[randomBirdName] = [];
+                        conversations[randomBirdName].push({ sender: 'bird', text: response });
+                        
+                        if (currentBird !== randomBirdName) {
+                            bird.unreadCount++;
                         }
+                        
+                        initBirdGrid();
                     }
                 }
             }
-        }, 30000); // 每30秒检查一次
+        }, 45000); // 每45秒检查一次
     </script>
 </body>
 </html>
